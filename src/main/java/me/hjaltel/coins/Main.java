@@ -18,25 +18,35 @@ public final class Main extends JavaPlugin {
     private Connection connection;
     public String host, database, username, password;
     public int port;
+    public Events events;
+    public Sql sql;
 
 
 
-    //public HashMap<UUID, PlayerInfo> playerInfo = new HashMap<>();
+    public HashMap<UUID, PlayerInfo> playerInfo = new HashMap<>();
 
 
     @Override
     public void onEnable() {
+        this.events = new Events();
+        this.sql = new Sql();
+
         loadConfig();
         mysqlSetup();
         instance = this;
 
+        Bukkit.getServer().getPluginManager().registerEvents(new Events(), this);
 
         Sql.createTables();
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        try {
+            this.getConnection().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -57,11 +67,11 @@ public final class Main extends JavaPlugin {
     }
 
     public void mysqlSetup() {
-        host = this.getConfig().getString("host");
-        port = this.getConfig().getInt("port");
-        database = this.getConfig().getString("database");
-        username = this.getConfig().getString("username");
-        password = this.getConfig().getString("password");
+        host = this.getConfig().getString("MySQL.host");
+        port = this.getConfig().getInt("MySQL.port");
+        database = this.getConfig().getString("MySQL.database");
+        username = this.getConfig().getString("MySQL.username");
+        password = this.getConfig().getString("MySQL.password");
 
         try {
 

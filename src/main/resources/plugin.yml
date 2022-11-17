@@ -1,0 +1,5 @@
+name: Coins
+version: 1.0
+main: me.hjaltel.coins.Main
+depend: []
+description: Coins
